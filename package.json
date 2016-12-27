@@ -23,7 +23,6 @@
   "dependencies": {
     "child_process": "^1.0.2",
     "fs": "0.0.1-security",
-    "gv-config": "github:davebeyer/gv-config",
     "path": "^0.12.7",
     "tree-kill": "^1.1.0"
   }
