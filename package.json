@@ -1,0 +1,30 @@
+{
+  "name": "gv-scripts",
+  "version": "1.0.0",
+  "description": "GroupVine server scripts",
+  "main": "server-starter.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davebeyer/gv-scripts.git"
+  },
+  "keywords": [
+    "GroupVine",
+    "scripts"
+  ],
+  "author": "Dave Beyer",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davebeyer/gv-scripts/issues"
+  },
+  "homepage": "https://github.com/davebeyer/gv-scripts#readme",
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "fs": "0.0.1-security",
+    "gv-config": "github:davebeyer/gv-config",
+    "path": "^0.12.7",
+    "tree-kill": "^1.1.0"
+  }
+}
