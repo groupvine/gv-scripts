@@ -45,7 +45,7 @@ process.argv.slice(2).forEach(function (option) {
             process.exit(-1);
         }
 
-    } else if ( logDirPath ) {
+    } else if ( logDirFlag ) {
         logDirFlag = false;
         logDir = option;
         
@@ -104,8 +104,12 @@ if ( baseDir === null ) {
     process.exit(-1);
 }
 
+
+if ( logDir === null ) {
+    logDir = path.resolve(baseDir, 'log');
+}
+var logPath    = path.resolve(logDir, serverName + '.log');
 var serverPath = path.resolve(baseDir, serverName + '.js');
-var logPath    = path.resolve(baseDir, 'log', serverName + '.log');
 var pidPath    = path.resolve(baseDir, 'bin', 'server.pid');
 var killerPath = path.resolve(__dirname, 'server-stopper-kill.js');
 
