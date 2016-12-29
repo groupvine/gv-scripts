@@ -17,6 +17,7 @@ function showUsage() {
     console.log("  -b, --build       Build CSS & JS before running");
     console.log("  -f, --foreground  Don't spawn separate process");
     console.log("  -g, --debug       Debug mode");
+    console.log("  -l, --logpath     Path to directory for log file");
 }
 
 var now            = new Date();
@@ -29,6 +30,9 @@ var serverName     = null;
 var baseDir        = null;
 var baseDirFlag    = false;
 
+var logDir         = null;
+var logDirFlag     = false;
+
 process.argv.slice(2).forEach(function (option) {
     option = option.trim();
     
@@ -38,6 +42,15 @@ process.argv.slice(2).forEach(function (option) {
         
         if ( !fs.existsSync(baseDir) ) {
             console.error("Invalid base directory " + baseDir + ", exiting");
+            process.exit(-1);
+        }
+
+    } else if ( logDirPath ) {
+        logDirFlag = false;
+        logDir = option;
+        
+        if ( !fs.existsSync(logDir) ) {
+            console.error("Invalid log directory " + logDir + ", exiting");
             process.exit(-1);
         }
 
@@ -55,6 +68,11 @@ process.argv.slice(2).forEach(function (option) {
         case '-d': case '--basedir':
             if ( baseDir === null ) {
                 baseDirFlag = true; 
+            }
+            break;
+        case '-l':  case '--logpath':
+            if ( logDir === null ) {
+                logDirFlag = true; 
             }
             break;
         default:
