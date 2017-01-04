@@ -47,11 +47,7 @@ process.argv.slice(2).forEach(function (option) {
     } else if ( logDirFlag ) {
         logDirFlag = false;
         logDir = option;
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 465027b2b0df3564cb7d72dddd4e3b7038287121
         if ( !fs.existsSync(logDir) ) {
             console.error("Invalid log directory " + logDir + ", exiting");
             process.exit(-1);
@@ -108,16 +104,11 @@ if ( baseDir === null ) {
 if ( logDir === null ) {
     logDir = path.resolve(baseDir, 'log');
 }
-<<<<<<< HEAD
 
 var logPath    = path.resolve(logDir, serverName + '.log');
 var serverPath = path.resolve(baseDir, serverName + '.js');
 var pidPath    = path.resolve(baseDir, serverName + '.pid');
-=======
-var logPath    = path.resolve(logDir, serverName + '.log');
-var serverPath = path.resolve(baseDir, serverName + '.js');
-var pidPath    = path.resolve(baseDir, 'bin', 'server.pid');
->>>>>>> 465027b2b0df3564cb7d72dddd4e3b7038287121
+
 var killerPath = path.resolve(__dirname, 'server-stopper-kill.js');
 
 // 
