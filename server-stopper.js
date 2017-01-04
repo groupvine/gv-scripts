@@ -12,7 +12,7 @@ var spawner    = require('child_process');
 //
 
 function showUsage() {
-    console.log('Usage: [sudo] stop <process ID>|<process ID file> [options]');
+    console.log('Usage: [sudo] stop <process ID>|<process ID file path> [options]');
     console.log("  -d, --basedir     Base directory (required)");
     console.log('  If not given, default process ID fetched from bin/server.pid, if available');
 }
@@ -20,6 +20,7 @@ function showUsage() {
 var pidNum         = null;
 var baseDir        = null;
 var baseDirFlag    = false;
+var pidPath        = null;
 
 process.argv.slice(2).forEach(function (option) {
     option = option.trim();
@@ -45,12 +46,13 @@ process.argv.slice(2).forEach(function (option) {
             process.exit(-1);
         }
 
-    } else if (pidNum === null) {
-        try {
-            pidNum = parseInt(option, 10);
-        } catch (err) {
-            showUsage();
-            process.exit(-1);
+    } else if (pidNum === null && pidPath === null) {
+        pidNum = parseInt(option, 10);
+        
+        if (!pidNum) {
+            pidPath = option;
+            // showUsage();
+            // process.exit(-1);
         }
     } else {
         showUsage();
@@ -58,13 +60,17 @@ process.argv.slice(2).forEach(function (option) {
     }
 });
 
-if ( baseDir === null ) {
-    console.error("Must specify base directory (with -d flag)");
-    showUsage();
-    process.exit(-1);
+
+if (!pidPath) {
+    if ( baseDir === null ) {
+        console.error("Must either provid path to PID file, or specify base directory (with -d flag)");
+        showUsage();
+        process.exit(-1);
+    }   
+
+    pidPath    = path.resolve(baseDir, 'bin', 'server.pid');
 }
 
-var pidPath    = path.resolve(baseDir, 'bin', 'server.pid');
 var killerPath = path.resolve(__dirname, 'server-stopper-kill.js');
 
 // 
@@ -73,7 +79,7 @@ var killerPath = path.resolve(__dirname, 'server-stopper-kill.js');
 
 var pidFileUsed = false;
 
-if (pidNum === null) {
+if (!pidNum) {
     var fileStat = null;
     try {
         fileStat = fs.statSync(pidPath);
