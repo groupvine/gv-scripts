@@ -140,16 +140,22 @@ if ( foregroundFlag || debugFlag) {
 var stdoutFile = fs.openSync(logPath, 'a');
 var stderrFile = fs.openSync(logPath, 'a');
 
+var child;
+
 // Issue a synchronous command to be sure we're sudo before 
 // spawing process that needs sudo
 spawner.execSync('sudo date');
+
+function exitHandler(child) {
+    console.log("Killing server process(es) " + child.pid);
+    spawner.execSync('sudo node ' + killerPath + ' ' + child.pid);
+}
+
 
 if ( foregroundFlag || debugFlag ) {
     //
     // Start server in 'foreground'
     //
-
-    var child;
 
     if ( !debugFlag ) {
         child = spawner.spawn('sudo', ['node', serverPath], {
@@ -172,11 +178,6 @@ if ( foregroundFlag || debugFlag ) {
     });
 
     console.log("Started server " + serverName + " with process ID " + child.pid);
-
-    function exitHandler() {
-        console.log("Killing server process(es) " + child.pid);
-        spawner.execSync('sudo node ' + killerPath + ' ' + child.pid);
-    }
 
     process.on('SIGINT',            exitHandler); // ctl-c
     // process.on('exit',              exitHandler);
