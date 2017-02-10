@@ -146,7 +146,7 @@ var child;
 // spawing process that needs sudo
 spawner.execSync('sudo date');
 
-function exitHandler(child) {
+function exitHandler() {
     console.log("Killing server process(es) " + child.pid);
     spawner.execSync('sudo node ' + killerPath + ' ' + child.pid);
 }
