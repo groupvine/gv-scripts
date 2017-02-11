@@ -147,8 +147,11 @@ var child;
 spawner.execSync('sudo date');
 
 function exitHandler() {
-    console.log("Killing server process(es) " + child.pid);
-    spawner.execSync('sudo node ' + killerPath + ' ' + child.pid);
+    console.log("Killing process: sudo kill -9 " + child.pid);
+    spawner.exec('sudo date', () => {
+        // be sure we're still su
+        spawner.execSync('sudo node ' + killerPath + ' ' + child.pid);
+    });
 }
 
 
