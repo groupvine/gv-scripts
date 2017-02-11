@@ -147,11 +147,15 @@ var child;
 spawner.execSync('sudo date');
 
 function exitHandler() {
-    console.log("If this fails, try:\n\n   sudo kill -TERM -" + child.pid + "\n\n");
-    spawner.exec('sudo date', () => {
-        // be sure we're still su
-        spawner.execSync('sudo node ' + killerPath + ' ' + child.pid);
-    });
+    try {
+        spawner.exec('sudo date', () => {
+            // be sure we're still su
+            spawner.execSync('sudo node ' + killerPath + ' ' + child.pid);
+        }); 
+    } catch(err) {
+        console.error(err);
+        console.log("To kill server:\n\n   sudo kill -TERM -" + child.pid + "\n\n");
+    }
 }
 
 
