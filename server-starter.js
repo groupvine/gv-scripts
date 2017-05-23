@@ -18,6 +18,7 @@ function showUsage() {
     console.log("  -f, --foreground  Don't spawn separate process");
     console.log("  -g, --debug       Debug mode");
     console.log("  -l, --logpath     Path to directory for log file");
+    console.log("  -n, --nvm         Use nvm (and obey version in closest .nvmrc file");
 }
 
 var now            = new Date();
@@ -31,6 +32,8 @@ var baseDirFlag    = false;
 
 var logDir         = null;
 var logDirFlag     = false;
+
+var useNvm        = null;
 
 process.argv.slice(2).forEach(function (option) {
     option = option.trim();
@@ -70,6 +73,9 @@ process.argv.slice(2).forEach(function (option) {
             if ( logDir === null ) {
                 logDirFlag = true; 
             }
+            break;
+        case '-n':  case '--nvm':
+            useNvm = true;
             break;
         default:
             showUsage();
@@ -146,6 +152,8 @@ var child;
 // spawing process that needs sudo
 spawner.execSync('sudo date');
 
+// spawner.execSync('source ~/.nvm/nvm.sh; nvm -v');
+
 function exitHandler() {
     try {
         spawner.exec('sudo date', () => {
@@ -159,22 +167,37 @@ function exitHandler() {
 }
 
 
+var cmdArgs;
+var nvmArgs = null;
+if (useNvm) {
+    nvmArgs = [__dirname + '/nodeVer'];
+}
+
 if ( foregroundFlag || debugFlag ) {
     //
     // Start server in 'foreground'
     //
 
+    let nodeCmd;
+
     if ( !debugFlag ) {
-        child = spawner.spawn('sudo', ['node', serverPath], {
-            detached: true,
-            cwd: baseDir
-        });
+        nodeCmd = 'node';
     } else {
-        child = spawner.spawn('sudo', ['node-debug', serverPath], {
-            detached: true,
-            cwd: baseDir
-        });
+        nodeCmd = 'node-debug';
     }
+
+    if (nvmArgs != null) {
+        // Can't run as sudo with 'nvm' since nvm is a shell 
+        // script and relies on user environment settings
+        cmdArgs = nvmArgs.concat([nodeCmd, serverPath]);
+    } else {
+        cmdArgs = ['sudo', nodeCmd, serverPath];
+    }
+    
+    child = spawner.spawn(cmdArgs[0], cmdArgs.slice(1), {
+        detached: true,
+        cwd: baseDir
+    });
 
     child.stdout.on('data', function(data) {
         console.log(data.toString().trim());
@@ -195,7 +218,14 @@ if ( foregroundFlag || debugFlag ) {
     // Start server daemon
     //
 
-    var child = spawner.spawn('sudo', ['node', serverPath], {
+    if (nvmArgs != null) {
+        // Can't run as sudo with nvm of a version
+        cmdArgs = nvmArgs.concat(['node', serverPath]);
+    } else {
+        cmdArgs = ['sudo', 'node', serverPath];
+    }
+
+    child = spawner.spawn(cmdArgs[0], cmdArgs.slice(1), {
         detached: true,
         cwd: baseDir,
         stdio: [ 'ignore', stdoutFile, stderrFile ]  // ignore stdin

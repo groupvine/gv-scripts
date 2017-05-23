@@ -1,0 +1,8 @@
+# Call like:
+#  nodeVer node /path/to/file
+
+# Load nvm scripts
+source $HOME/.nvm/nvm.sh
+
+nvm use
+nvm run $1 $2
