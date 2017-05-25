@@ -178,21 +178,30 @@ if ( foregroundFlag || debugFlag ) {
     // Start server in 'foreground'
     //
 
-    let nodeCmd;
+    let nodeCmds;
 
     if ( !debugFlag ) {
-        nodeCmd = 'node';
+        nodeCmds = ['node'];
     } else {
-        nodeCmd = 'node-debug';
+        if (nvmArgs != null) {
+            nodeCmds = ['node', '--debug-brk', '--inspect'];
+        } else {
+            // todo: does this still work?
+            nodeCmds = ['node-debug'];
+        }
     }
+
+    nodeCmds.push(serverPath);
 
     if (nvmArgs != null) {
         // Can't run as sudo with 'nvm' since nvm is a shell 
         // script and relies on user environment settings
-        cmdArgs = nvmArgs.concat([nodeCmd, serverPath]);
+        cmdArgs = nvmArgs.concat(nodeCmds);
     } else {
-        cmdArgs = ['sudo', nodeCmd, serverPath];
+        cmdArgs = ['sudo'].concat(nodeCmds);
     }
+
+    // console.log("Executing: ", cmdArgs);
     
     child = spawner.spawn(cmdArgs[0], cmdArgs.slice(1), {
         detached: true,
