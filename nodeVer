@@ -5,4 +5,4 @@
 source $HOME/.nvm/nvm.sh
 
 nvm use
-nvm run $1 $2
+nvm run $1 $2 $3 $4 $5
