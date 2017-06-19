@@ -184,7 +184,8 @@ if ( foregroundFlag || debugFlag ) {
         nodeCmds = ['node'];
     } else {
         if (nvmArgs != null) {
-            nodeCmds = ['node', '--debug-brk', '--inspect'];
+            // nodeCmds = ['node', '--debug-brk', '--inspect=0.0.0.0'];
+            nodeCmds = ['node', '--inspect-brk=0.0.0.0'];
         } else {
             // todo: does this still work?
             nodeCmds = ['node-debug'];
@@ -201,7 +202,7 @@ if ( foregroundFlag || debugFlag ) {
         cmdArgs = ['sudo'].concat(nodeCmds);
     }
 
-    // console.log("Executing: ", cmdArgs);
+    console.log("Executing: ", cmdArgs.join(' '));
     
     child = spawner.spawn(cmdArgs[0], cmdArgs.slice(1), {
         detached: true,
