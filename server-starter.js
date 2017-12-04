@@ -178,13 +178,29 @@ if ( foregroundFlag || debugFlag ) {
     // Start server in 'foreground'
     //
 
-    let nodeCmds = ['node'];
+    let nodeCmds;
 
-    if ( debugFlag ) {
-        nodeCmds.push('--inspect-brk=0.0.0.0');
+    if ( !debugFlag ) {
+        nodeCmds = ['node'];
+    } else {
+        if (nvmArgs != null) {
+            // nodeCmds = ['node', '--debug-brk', '--inspect=0.0.0.0'];
+            // nodeCmds = ['node', '--inspect-brk=0.0.0.0'];
+            nodeCmds = ['node', '--inspect-brk'];
+        } else {
+            // todo: does this still work?
+            nodeCmds = ['node-debug'];
+        }
     }
 
     nodeCmds.push(serverPath);
+
+    if (debugFlag) {
+        // For debugging SocketCluster workers and brokers
+        // Note that these must come *after* the server argument (they are args for the server)
+        nodeCmds.push('--inspect-workers');
+        nodeCmds.push('--inspect-brokers');
+    }
 
     if (nvmArgs != null) {
         // Can't run as sudo with 'nvm' since nvm is a shell 
