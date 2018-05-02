@@ -178,19 +178,12 @@ if ( foregroundFlag || debugFlag ) {
     // Start server in 'foreground'
     //
 
-    let nodeCmds;
+    let nodeCmds  = ['node'];
 
-    if ( !debugFlag ) {
-        nodeCmds = ['node'];
-    } else {
-        if (nvmArgs != null) {
-            // nodeCmds = ['node', '--debug-brk', '--inspect=0.0.0.0'];
-            // nodeCmds = ['node', '--inspect-brk=0.0.0.0'];
-            nodeCmds = ['node', '--inspect-brk'];
-        } else {
-            // todo: does this still work?
-            nodeCmds = ['node-debug'];
-        }
+    if ( debugFlag ) {
+        nodeCmds.push('--inspect-brk');
+        // nodeCmds.push('--debug-brk').push('--inspect=0.0.0.0');
+        // nodeCmds.push('--inspect-brk=0.0.0.0');
     }
 
     nodeCmds.push(serverPath);
