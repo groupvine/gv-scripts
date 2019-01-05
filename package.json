@@ -4,7 +4,9 @@
   "description": "GroupVine server scripts",
   "main": "server-starter.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "exit 0",
+    "reinstall": "rm -rf node_modules && npm install"
   },
   "repository": {
     "type": "git",
