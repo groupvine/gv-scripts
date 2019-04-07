@@ -88,7 +88,7 @@ if (!pidNum) {
     }
 
     if ( !fileStat || !fileStat.isFile() ) {
-        console.error("ERROR: No PID given and no server.pid file");
+        console.error("Notice: No PID given and no server.pid file");
         showUsage();
         process.exit(-1);
     }
@@ -99,7 +99,7 @@ if (!pidNum) {
         pidNum = fs.readFileSync(pidPath);
         pidNum = parseInt(pidNum, 10);
     } catch (err) {
-        console.error("ERROR: Unable to determine a process ID; no valid PID in server.pid");
+        console.error("Notice: Unable to determine a process ID; no valid PID in server.pid");
         showUsage();
         process.exit(-1);
     }
