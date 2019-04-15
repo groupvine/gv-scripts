@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Call like:
 #  nodeVer node /path/to/file
 
