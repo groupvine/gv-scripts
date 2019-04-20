@@ -18,7 +18,9 @@ function showUsage() {
     console.log("  -f, --foreground  Don't spawn separate process");
     console.log("  -g, --debug       Debug mode");
     console.log("  -l, --logpath     Path to directory for log file");
-    console.log("  -n, --nvm         Use nvm (and obey version in closest .nvmrc file");
+    console.log("  -s, --sudo        Run node process as sudo");
+    // --nvm no longer supported
+    // console.log("  -n, --nvm         Use nvm (and obey version in closest .nvmrc file");
 }
 
 var now            = new Date();
@@ -33,7 +35,10 @@ var baseDirFlag    = false;
 var logDir         = null;
 var logDirFlag     = false;
 
-var useNvm        = null;
+var useSudo        = null;
+
+// First, get the path to the preferred node version being run
+var nodejs = process.argv[0];
 
 process.argv.slice(2).forEach(function (option) {
     option = option.trim();
@@ -74,8 +79,8 @@ process.argv.slice(2).forEach(function (option) {
                 logDirFlag = true; 
             }
             break;
-        case '-n':  case '--nvm':
-            useNvm = true;
+        case '-s':  case '--sudo':
+            useSudo = true;
             break;
         default:
             showUsage();
@@ -152,13 +157,11 @@ var child;
 // spawing process that needs sudo
 spawner.execSync('sudo date');
 
-// spawner.execSync('source ~/.nvm/nvm.sh; nvm -v');
-
 function exitHandler() {
     try {
         spawner.exec('sudo date', () => {
             // be sure we're still su
-            spawner.execSync('sudo node ' + killerPath + ' ' + child.pid);
+            spawner.execSync('sudo ' + nodejs + ' ' + killerPath + ' ' + child.pid);
         }); 
     } catch(err) {
         console.error(err);
@@ -168,17 +171,13 @@ function exitHandler() {
 
 
 var cmdArgs;
-var nvmArgs = null;
-if (useNvm) {
-    nvmArgs = [__dirname + '/nodeVer'];
-}
 
 if ( foregroundFlag || debugFlag ) {
     //
     // Start server in 'foreground'
     //
 
-    let nodeCmds  = ['node'];
+    let nodeCmds  = [nodejs];
 
     if ( debugFlag ) {
         nodeCmds.push('--inspect-brk');
@@ -195,10 +194,8 @@ if ( foregroundFlag || debugFlag ) {
         nodeCmds.push('--inspect-brokers');
     }
 
-    if (nvmArgs != null) {
-        // Can't run as sudo with 'nvm' since nvm is a shell 
-        // script and relies on user environment settings
-        cmdArgs = nvmArgs.concat(nodeCmds);
+    if (!useSudo) {
+        cmdArgs = nodeCmds;
     } else {
         cmdArgs = ['sudo'].concat(nodeCmds);
     }
@@ -229,11 +226,10 @@ if ( foregroundFlag || debugFlag ) {
     // Start server daemon
     //
 
-    if (nvmArgs != null) {
-        // Can't run as sudo with nvm of a version
-        cmdArgs = nvmArgs.concat(['node', serverPath]);
+    if (!useSudo) {
+        cmdArgs = [nodejs, serverPath];
     } else {
-        cmdArgs = ['sudo', 'node', serverPath];
+        cmdArgs = ['sudo', nodejs, serverPath];
     }
 
     child = spawner.spawn(cmdArgs[0], cmdArgs.slice(1), {

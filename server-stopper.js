@@ -22,6 +22,9 @@ var baseDir        = null;
 var baseDirFlag    = false;
 var pidPath        = null;
 
+// First, get the path to the preferred node version being run
+var nodejs = process.argv[0];
+
 process.argv.slice(2).forEach(function (option) {
     option = option.trim();
     
@@ -112,7 +115,7 @@ if (!pidNum) {
 //
 
 console.log("Killing server process(es) rooted with process " + pidNum);
-spawner.execSync('sudo node ' + killerPath + ' ' + pidNum);
+spawner.execSync('sudo ' + nodejs + ' ' + killerPath + ' ' + pidNum);
 
 // Remove file
 if ( pidFileUsed ) {
