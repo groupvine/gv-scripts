@@ -180,6 +180,7 @@ if ( foregroundFlag || debugFlag ) {
     let nodeCmds  = [nodejs];
 
     if ( debugFlag ) {
+        nodeCmds.push('--inspect-brk=0.0.0.0:9229');
         nodeCmds.push('--inspect-brk');
         // nodeCmds.push('--debug-brk').push('--inspect=0.0.0.0');
         // nodeCmds.push('--inspect-brk=0.0.0.0');
