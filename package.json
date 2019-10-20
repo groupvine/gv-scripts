@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/davebeyer/gv-scripts.git"
+    "url": "git+https://github.com/groupvine/gv-scripts.git"
   },
   "keywords": [
     "GroupVine",
@@ -19,9 +19,9 @@
   "author": "Dave Beyer",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/davebeyer/gv-scripts/issues"
+    "url": "https://github.com/groupvine/gv-scripts/issues"
   },
-  "homepage": "https://github.com/davebeyer/gv-scripts#readme",
+  "homepage": "https://github.com/groupvine/gv-scripts#readme",
   "dependencies": {
     "child_process": "^1.0.2",
     "fs": "0.0.1-security",
