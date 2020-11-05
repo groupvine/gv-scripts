@@ -19,6 +19,7 @@ function showUsage() {
     console.log("  -g, --debug       Debug mode");
     console.log("  -l, --logpath     Path to directory for log file");
     console.log("  -s, --sudo        Run node process as sudo");
+    console.log("  -t, --trace-warns  Add --trace-warnings flag");
     // --nvm no longer supported
     // console.log("  -n, --nvm         Use nvm (and obey version in closest .nvmrc file");
 }
@@ -36,6 +37,7 @@ var logDir         = null;
 var logDirFlag     = false;
 
 var useSudo        = null;
+var traceWarns     = false;
 
 // First, get the path to the preferred node version being run
 var nodejs = process.argv[0];
@@ -78,6 +80,9 @@ process.argv.slice(2).forEach(function (option) {
             if ( logDir === null ) {
                 logDirFlag = true; 
             }
+            break;
+        case '-t':  case '--trace-warns':
+            traceWarns = true; 
             break;
         case '-s':  case '--sudo':
             useSudo = true;
@@ -184,6 +189,10 @@ if ( foregroundFlag || debugFlag ) {
         nodeCmds.push('--inspect-brk');
         // nodeCmds.push('--debug-brk').push('--inspect=0.0.0.0');
         // nodeCmds.push('--inspect-brk=0.0.0.0');
+    }
+
+    if (traceWarns) {
+        nodeCmds.push('--trace-warnings');
     }
 
     nodeCmds.push(serverPath);
